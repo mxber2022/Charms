@@ -1,0 +1,21 @@
+version: 8
+
+apps:
+  $00: n/${app_id}/${app_vk}
+
+private_inputs:
+  $00: "${in_utxo_0}"
+
+ins:
+  - utxo_id: ${in_utxo_0}
+    charms: {}
+
+outs:
+  - address: ${vault_address}
+    charms:
+      $00:
+        owner: ${owner_address}
+        beneficiary: ${beneficiary_address}
+        last_heartbeat_block: ${current_block}
+        heartbeat_interval: ${heartbeat_interval}
+

@@ -1,0 +1,15 @@
+{
+  "package_msg": "transaction failed",
+  "tx-results": {
+    "7c0fe6ef6cfdb2504e3640b6aec9e1cf2deeb90278b04db730195085ea9d8ea3": {
+      "txid": "7c0fe6ef6cfdb2504e3640b6aec9e1cf2deeb90278b04db730195085ea9d8ea3",
+      "other-wtxid": "84a0894cdea54148de53e770733bea52ade552e8ae26521bff7dd040456d98b7"
+    },
+    "63a53f532cf9ecc07aee1f12b190e538f6c55b7eedeeb041155169bb176c2879": {
+      "txid": "7579787f3f84480149a0c825693392eb9b3d6a0968641de49685b178457bf0b6",
+      "error": "mempool-script-verify-flag-failed (Witness program was passed an empty witness), input 0 of 7579787f3f84480149a0c825693392eb9b3d6a0968641de49685b178457bf0b6 (wtxid 63a53f532cf9ecc07aee1f12b190e538f6c55b7eedeeb041155169bb176c2879), spending 766dcfe89441e66c833ddbd1975ce7e18c7284701243eb9a14805b3098295778:0"
+    }
+  },
+  "replaced-transactions": [
+  ]
+}

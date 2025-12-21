@@ -1,0 +1,16 @@
+{
+  "vault_utxo": "e209e674286b42496f9d1f8753bb6a1527a3c7ae1fbe2c768b4c067b3281b65c:0",
+  "input_utxo": "7579787f3f84480149a0c825693392eb9b3d6a0968641de49685b178457bf0b6:0",
+  "app_id": "943094b584b8163f8edb8f20892e48518f6946aa28106de6ab45c02eeb6554af",
+  "app_vk": "eac43d0afe1216684677e275d517c568335703f75901615bdbe998a689050e56",
+  "owner_address": "tb1pzwhfatdwel88smwamph5z6wsskets9x2th3l2jxu27waz4jgzy7s7uh4fx",
+  "beneficiary_address": "tb1pzwhfatdwel88smwamph5z6wsskets9x2th3l2jxu27waz4jgzy7s7uh4fx",
+  "vault_address": "tb1pzwhfatdwel88smwamph5z6wsskets9x2th3l2jxu27waz4jgzy7s7uh4fx",
+  "heartbeat_interval": 144,
+  "initial_block": 114540,
+  "last_heartbeat_block": 114540,
+  "created_at": "2025-12-21T13:37:42Z",
+  "note": "Vault UTXO will be available after transaction is confirmed",
+  "spell_txid": "e209e674286b42496f9d1f8753bb6a1527a3c7ae1fbe2c768b4c067b3281b65c",
+  "status": "confirmed"
+}

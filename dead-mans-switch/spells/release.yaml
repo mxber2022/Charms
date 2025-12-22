@@ -18,4 +18,5 @@ ins:
 outs:
   - address: ${beneficiary_address}
     charms: {}
+    sats: ${vault_sats}
 

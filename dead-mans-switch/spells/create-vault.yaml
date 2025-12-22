@@ -18,4 +18,5 @@ outs:
         beneficiary: ${beneficiary_address}
         last_heartbeat_block: ${current_block}
         heartbeat_interval: ${heartbeat_interval}
+    sats: ${vault_sats}
 

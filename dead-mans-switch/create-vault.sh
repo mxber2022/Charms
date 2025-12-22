@@ -7,7 +7,7 @@ cd "$(dirname "$0")"
 
 # Set RPC endpoint and credentials (Testnet4)
 export BITCOIN_TESTNET_RPC="${BITCOIN_TESTNET_RPC:-https://bitcoin-testnet4.gateway.tatum.io}"
-export ADDRESS="${ADDRESS:-tb1qv0sgg028jxxugjnhqwjktz6ykjhulcl4ngknck}"
+export ADDRESS="${ADDRESS:-tb1pzwhfatdwel88smwamph5z6wsskets9x2th3l2jxu27waz4jgzy7s7uh4fx}"
 export PRIVATE_KEY="${PRIVATE_KEY:-76476027042ab81d77d4bbc63ef3ea722d2ac7f2f35f0844915da7c39ab5c72d}"
 
 echo "=== Creating Inheritance Vault on Testnet ==="
@@ -73,6 +73,10 @@ echo "   ✅ Current block: $current_block"
 # Heartbeat interval
 heartbeat_interval=${HEARTBEAT_INTERVAL:-144}
 echo "   ✅ Heartbeat interval: $heartbeat_interval blocks (~$((heartbeat_interval * 10 / 60 / 24)) days)"
+
+# Vault Bitcoin amount (in sats)
+vault_sats=${VAULT_SATS:-10000}  # Default 10,000 sats (0.0001 BTC)
+echo "   ✅ Vault Bitcoin: $vault_sats sats ($(echo "scale=8; $vault_sats / 100000000" | bc) BTC)"
 
 echo ""
 
@@ -154,7 +158,7 @@ echo ""
 
 # Export all variables for envsubst (ensure current_block is exported)
 export app_bin app_vk app_id vault_address owner_address
-export beneficiary_address heartbeat_interval
+export beneficiary_address heartbeat_interval vault_sats
 export in_utxo_0=$in_utxo
 export current_block  # Make sure this is exported
 
@@ -228,10 +232,18 @@ echo "Commit TX: ${commit_tx:0:20}...${commit_tx: -20} (${#commit_tx} chars)"
 echo "Spell TX:  ${spell_tx:0:20}...${spell_tx: -20} (${#spell_tx} chars)"
 echo ""
 
+# Create data directory
+DATA_DIR="../vault-data"
+mkdir -p "$DATA_DIR"
+VAULT_ID="${app_id:0:16}"  # Use first 16 chars of app_id as vault ID
+VAULT_DIR="$DATA_DIR/vault-$VAULT_ID"
+mkdir -p "$VAULT_DIR"
+
 # Save transactions in the format expected by submitpackage
 tx_json_array=$(jq -n --arg commit "$commit_tx" --arg spell "$spell_tx" '[$commit, $spell]')
-echo "$tx_json_array" > /tmp/vault-transactions.json
-echo "Transactions saved to: /tmp/vault-transactions.json"
+echo "$tx_json_array" > "$VAULT_DIR/transactions.json"
+echo "$tx_json_array" > /tmp/vault-transactions.json  # Also save to /tmp for compatibility
+echo "Transactions saved to: $VAULT_DIR/transactions.json"
 echo ""
 
 # Save vault details for heartbeat/release operations
@@ -242,10 +254,13 @@ vault_info=$(jq -n \
     --arg owner_address "$owner_address" \
     --arg beneficiary_address "$beneficiary_address" \
     --arg vault_address "$vault_address" \
+    --arg input_utxo "$in_utxo" \
     --argjson heartbeat_interval "$heartbeat_interval" \
     --argjson initial_block "$current_block" \
+    --arg created_at "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
     '{
         vault_utxo: $vault_utxo,
+        input_utxo: $input_utxo,
         app_id: $app_id,
         app_vk: $app_vk,
         owner_address: $owner_address,
@@ -253,11 +268,22 @@ vault_info=$(jq -n \
         vault_address: $vault_address,
         heartbeat_interval: $heartbeat_interval,
         initial_block: $initial_block,
+        last_heartbeat_block: $initial_block,
+        created_at: $created_at,
         note: "Vault UTXO will be available after transaction is confirmed"
     }')
-echo "$vault_info" > /tmp/vault-info.json
-echo "Vault info saved to: /tmp/vault-info.json"
+echo "$vault_info" > "$VAULT_DIR/info.json"
+echo "$vault_info" > /tmp/vault-info.json  # Also save to /tmp for compatibility
+echo "Vault info saved to: $VAULT_DIR/info.json"
 echo "   (Update vault_utxo after transaction is confirmed)"
+echo ""
+
+# Save commit and spell transactions separately
+echo "$commit_tx" > "$VAULT_DIR/commit-tx.hex"
+echo "$spell_tx" > "$VAULT_DIR/spell-tx.hex"
+echo "Individual transactions saved:"
+echo "  - $VAULT_DIR/commit-tx.hex"
+echo "  - $VAULT_DIR/spell-tx.hex"
 echo ""
 
 # Sign transactions
